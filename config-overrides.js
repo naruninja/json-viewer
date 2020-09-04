@@ -1,6 +1,6 @@
-const rewireStyledComponents = require('react-app-rewire-styled-components');
+const rewireStyledComponents = require('react-app-rewire-styled-components')
 
 module.exports = (config, env) => {
-    config = rewireStyledComponents(config, env)
-    return config
+   config = rewireStyledComponents(config, env)
+   return config
 }

@@ -1,0 +1,65 @@
+version: 2.1
+jobs:
+  install:
+    docker:
+      - image: "circleci/node:latest"
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install Dependencies
+          command: yarn install --immutable
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+      - persist_to_workspace:
+          root: "/home/circleci"
+          paths:
+            - "project"
+
+  build:
+    docker:
+      - image: "circleci/node:latest"
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+      - run: yarn build
+      - run: npx gulp 
+      - persist_to_workspace:
+          root: "/home/circleci"
+          paths:
+            - "project"
+
+  deploy:
+    docker:
+      - image: "google/cloud-sdk:latest"
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+      - run: |
+          cd /home/circleci
+          echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
+          pwd
+          ls -la .
+          gsutil cp project/build/index.html gs://notes-naruninja-bucket/json.html
+          gsutil setmeta -h Cache-Control:'Cache-Control: private, max-age=20, no-transform' gs://notes-naruninja-bucket/json.html
+
+workflows:
+  test_build:
+    jobs:
+      - install
+      - build:
+          requires:
+            - install
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
