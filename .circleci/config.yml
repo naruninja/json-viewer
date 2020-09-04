@@ -46,8 +46,8 @@ jobs:
           echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
           pwd
           ls -la .
-          gsutil cp project/build/index.html gs://notes-naruninja-bucket/json.html
-          gsutil setmeta -h Cache-Control:'Cache-Control: private, max-age=20, no-transform' gs://notes-naruninja-bucket/json.html
+          gsutil cp project/build/index.html gs://json-naruninja-bucket/index.html
+          gsutil setmeta -h Cache-Control:'Cache-Control: private, max-age=20, no-transform' gs://json-naruninja-bucket/index.html
 
 workflows:
   test_build:
