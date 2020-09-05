@@ -22,6 +22,18 @@ jobs:
           paths:
             - "project"
 
+  test:
+    docker:
+      - image: "circleci/node:latest"
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+      - run: yarn test --watchAll=false 
+      - persist_to_workspace:
+          root: "/home/circleci"
+          paths:
+            - "project"
+
   build:
     docker:
       - image: "circleci/node:latest"
@@ -53,12 +65,17 @@ workflows:
   test_build:
     jobs:
       - install
+      - test:
+          requires:
+            - install
       - build:
           requires:
             - install
+
       - deploy:
           requires:
             - build
+            - test
           filters:
             branches:
               only:

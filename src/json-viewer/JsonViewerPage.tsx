@@ -3,11 +3,6 @@ import React from 'react'
 import * as _ from 'styled-components/cssprop'
 import styled from 'styled-components'
 
-// TODO:
-// - use tests
-// - clean
-// - deploy to json.naru.ninja using circleci
-
 const Horizontal = styled.div`
    display: flex;
    flex-direction: row;
@@ -83,7 +78,7 @@ function isPlainObject(value: JsonNode): value is PlainObject {
    return value != null && !Array.isArray(value) && typeof value === 'object'
 }
 
-const FormattedJson = ({ value }: { value: JsonNode }) => {
+export const FormattedJson = ({ value }: { value: JsonNode }) => {
    if (!value) return null
    return (
       <div
