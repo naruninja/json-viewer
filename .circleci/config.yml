@@ -28,7 +28,7 @@ jobs:
     steps:
       - attach_workspace:
           at: /home/circleci
-      - run: npx jest
+      - run: yarn test --watchAll=false 
       - persist_to_workspace:
           root: "/home/circleci"
           paths:
